@@ -20,7 +20,7 @@ export default function CurrentSlider() {
   };
 
   return (
-    <Box sx={{ width: 300 }}>
+    <Box sx={{ width: 150 }}>
         <Typography id="non-linear-slider" gutterBottom>
             CURRENT: {`${value[0]} - ${value[1]} A`}
         </Typography>

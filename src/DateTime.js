@@ -26,7 +26,7 @@ export default function MaterialUIPickers({props}) {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Stack spacing={3}>
         <DateTimePicker
-          label="Date&Time picker"
+          label={props.title}
           value={value}
           onChange={handleChange}
           renderInput={(params) => <TextField {...params} />}

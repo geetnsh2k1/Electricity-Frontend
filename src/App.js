@@ -6,6 +6,7 @@ import Chart from "./Chart";
 import VoltageSlider from "./voltageScroller"
 import CurrentSlider from "./currentScroller";
 import PowerSlider from "./powerScroller";
+import NavBar from "./NavBar";
 
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -24,14 +25,14 @@ const columns = [
 function App() {
 
   const state = useSelector((state) => state)
-  const [loading, setLoading] = useState(false)
+  const [loader, setLoader] = useState(false)
   const [reading, setReadings] = useState([])
 
   const dispatch = useDispatch();
   const { UPDATE_READING } = bindActionCreators(actionCreators, dispatch);
 
   const handleSearch = (event) => {
-    setLoading(true);
+    setLoader(true);
     console.log(Math.round(state.time["min"].getTime()/1000), Math.round(state.time["max"].getTime()/1000))
     var data = { 
       "1": {
@@ -92,32 +93,35 @@ function App() {
           data.push(read)
         }
         setReadings(data)
-        setLoading(false);
+        setLoader(false);
         UPDATE_READING(data);
       } 
     })
     .catch((err) => {
       console.log(err)
-      setLoading(false);
+      setLoader(false);
     })
   }
 
   return (
-    <div style={{"margin":"10px", "width": "100%"}}>
-      <DateTime props={{"min": true, "max": false}}></DateTime> <br />
-      <DateTime props={{"min": false, "max": true}}></DateTime> <br />
-
-      <VoltageSlider/>
-      <CurrentSlider/>
-      <PowerSlider/>
-
-      <LoadingButton loading variant="contained"  onClick={handleSearch} loading={loading}>
-        SEARCH
-      </LoadingButton>
-
-      <h1>Result</h1>
+    <div >
+    <NavBar></NavBar>
+    <div style={{"margin":"2.5% 0%", "width": "100%"}}>
       
-      <div style={{ height: 400, width: '100%' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+        <DateTime props={{"min": true, "max": false, "title": "From"}}></DateTime> 
+        <DateTime props={{"min": false, "max": true, "title": "To"}}></DateTime> 
+        <VoltageSlider/>
+        <CurrentSlider/>
+        <PowerSlider/>
+
+        <LoadingButton style={{width: '80px', height: '50px', marginTop: '5px'}} loading variant="contained"  onClick={handleSearch} loading={loader}>
+          GET
+        </LoadingButton>
+
+      </div>
+    
+      <div style={{ margin: "5% 21%", height: 400 }}>
         <DataGrid
           rows={reading}
           columns={columns}
@@ -126,7 +130,11 @@ function App() {
           checkboxSelection
         />
       </div>
-      <Chart></Chart>
+
+      { reading.length ? 
+        <Chart></Chart>
+      : "" }
+    </div>
     </div>
   );
 }
